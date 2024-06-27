@@ -13,6 +13,7 @@
 
 */
 #include "JOYSTICK.h"
+#include "BUTTON.h"
 
 const int rightJoystickPinX = A0;
 const int rightJoystickPinY = A1;
@@ -22,8 +23,13 @@ const int leftJoystickPinX = A2;
 const int leftJoystickPinY = A3;
 const int leftJoystickButton = 11;
 
-Joystick rightJoystick("RIGHT", rightJoystickPinX, rightJoystickPinY, rightJoystickButton);
-Joystick leftJoystick("LEFT", leftJoystickPinX, leftJoystickPinY, leftJoystickButton);
+const int leftButtonPin = 10;
+const int rightButtonPin = 4;
+
+Joystick rightJoystick("RIGHT JOYSTICK", rightJoystickPinX, rightJoystickPinY, rightJoystickButton);
+Joystick leftJoystick("LEFT JOYSTICK" , leftJoystickPinX, leftJoystickPinY, leftJoystickButton);
+Button rightButton("RIGHT BUTTON", rightButtonPin);
+Button leftButton("LEFT BUTTON", leftButtonPin);
 
 void setup() {
   Serial.begin(9600);
@@ -32,9 +38,14 @@ void setup() {
 void loop() {
   rightJoystick.calculatePositionAndPower();
   leftJoystick.calculatePositionAndPower();
-  Serial.print(rightJoystick.toString() + " " +leftJoystick.toString() + "\r\n" );
+  rightButton.calculateStatus();
+  leftButton.calculateStatus();
+  printJoystickStatus();
+  delay(1000);
+}
 
-  delay(100);
+void printJoystickStatus(){
+    Serial.print(rightJoystick.toString() + " " + leftJoystick.toString() + " " + rightButton.toString() + " " + leftButton.toString() + "\r\n" );
 }
 
 
