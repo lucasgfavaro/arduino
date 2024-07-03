@@ -18,12 +18,18 @@ class Button {
       pinMode(buttonPin, INPUT_PULLUP);
     }
 
-    void calculateStatus() {
+    void refreshStatus() {
       status = digitalRead(pin);
     }
 
     String toString() {
       return name + " Status: " + status;
+    }
+
+    boolean isActive(){
+      if (status==0)
+        return true;
+      return false;
     }
 };
 

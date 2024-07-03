@@ -9,11 +9,12 @@ class Joystick {
     String name;
     int xPin;
     int YPin;
+    int buttonPin;
     int x;
     int y;
+    int power;
     String xPositionAndPower;
-    String yPositionAndPower;
-    int buttonPin;
+    String yPositionAndPower;    
     int buttonStatus;
 
   public:
@@ -26,7 +27,7 @@ class Joystick {
       pinMode(buttonPin, INPUT_PULLUP);
     }
     
-  void calculatePositionAndPower(){
+  void refreshStatus(){
     
     x = analogRead(xPin);
     y = analogRead(YPin);
