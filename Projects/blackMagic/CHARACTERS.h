@@ -1,20 +1,19 @@
-
-// Button.h
+// Characters.h
 #ifndef CHARACTERS_H
 #define CHARACTERS_H
 
-byte rightArrow[] = {
+byte centered[8] = {
   B00000,
-  B00100,
-  B00010,
-  B11111,
-  B00010,
-  B00100,
+  B00000,
+  B00000,
+  B01110,
+  B01110,
+  B00000,
   B00000,
   B00000
 };
 
-byte leftArrow[] = {
+byte leftArrow[8] = {
   B00000,
   B00100,
   B01000,
@@ -25,7 +24,18 @@ byte leftArrow[] = {
   B00000
 };
 
-byte downArrow[] = {
+byte rightArrow[8] = {
+  B00000,
+  B00100,
+  B00010,
+  B11111,
+  B00010,
+  B00100,
+  B00000,
+  B00000
+};
+
+byte downArrow[8] = {
   B00000,
   B00100,
   B00100,
@@ -36,7 +46,7 @@ byte downArrow[] = {
   B00000
 };
 
-byte upArrow[] = {
+byte upArrow[8] = {
   B00000,
   B00100,
   B01110,
@@ -47,7 +57,7 @@ byte upArrow[] = {
   B00000
 };
 
-byte buttonOff[] = {
+byte buttonOff[8] = {
   B00000,
   B01110,
   B11011,
@@ -58,7 +68,7 @@ byte buttonOff[] = {
   B00000
 };
 
-byte buttonOn[] = {
+byte buttonOn[8] = {
   B00000,
   B01110,
   B11111,
@@ -69,7 +79,7 @@ byte buttonOn[] = {
   B00000
 };
 
-byte toggleSwitchOff[] = {
+byte toggleSwitchOff[8] = {
   B10000,
   B01000,
   B00100,
@@ -80,7 +90,7 @@ byte toggleSwitchOff[] = {
   B11111
 };
 
-byte toggleSwitchOn[] = {
+byte toggleSwitchOn[8] = {
   B00001,
   B00010,
   B00100,
@@ -89,17 +99,6 @@ byte toggleSwitchOn[] = {
   B11111,
   B11111,
   B11111
-};
-
-byte centered[] = {
-  B00000,
-  B00000,
-  B00000,
-  B01110,
-  B01110,
-  B00000,
-  B00000,
-  B00000
 };
 
 #endif

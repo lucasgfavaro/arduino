@@ -21,8 +21,8 @@ const int blueToothRX = 3;
 
 SoftwareSerial HCO5Serial(blueToothTX, blueToothRX);  // RX, TX
 
-MiniJoystick rightMiniJoystick("RIGHT JOYSTICK", rightJoystickPinX, rightJoystickPinY, rightJoystickButton);
-MiniJoystick leftMiniJoystick("LEFT JOYSTICK", leftJoystickPinX, leftJoystickPinY, leftJoystickButton);
+MiniJoystick rightMiniJoystick("RIGHT", rightJoystickPinX, rightJoystickPinY, rightJoystickButton);
+MiniJoystick leftMiniJoystick("LEFT", leftJoystickPinX, leftJoystickPinY, leftJoystickButton);
 Button rightButton("RIGHT BUTTON", rightButtonPin);
 Button leftButton("LEFT BUTTON", leftButtonPin);
 Button rightToggleSwitch("RIGHT SWITCH", rightButtonPin);
@@ -65,20 +65,20 @@ void updateDisplay() {
     display->rightButtonOff();
   }
 
-  if (leftToggleSwitch.isActive()) {
-    display->leftToggleSwitchOn();
-  } else {
-    display->leftToggleSwitchOff();
-  }
+  // if (leftToggleSwitch.isActive()) {
+  //   display->leftToggleSwitchOn();
+  // } else {
+  //   display->leftToggleSwitchOff();
+  // }
 
-  if (rightToggleSwitch.isActive()) {
-    display->rightToggleSwitchOn();
-  } else {
-    display->rightToggleSwitchOff();
-  }
+  // if (rightToggleSwitch.isActive()) {
+  //   display->rightToggleSwitchOn();
+  // } else {
+  //   display->rightToggleSwitchOff();
+  // }
 
-  display->joystick('L', leftMiniJoystick.getXDirection(), leftMiniJoystick.getXPower(), leftMiniJoystick.getYDirection(), leftMiniJoystick.getYPower(), leftMiniJoystick.buttonIsOn());
-  display->joystick('R', rightMiniJoystick.getXDirection(), rightMiniJoystick.getXPower(), rightMiniJoystick.getYDirection(), rightMiniJoystick.getYPower(), rightMiniJoystick.buttonIsOn());
+  display->joystick(leftMiniJoystick);
+  display->joystick(rightMiniJoystick);
 }
 
 void initializeBluetooth(unsigned long baud) {

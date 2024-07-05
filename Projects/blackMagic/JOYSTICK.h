@@ -26,6 +26,10 @@ public:
     pinMode(buttonPin, INPUT_PULLUP);
   }
 
+  String getName() {
+    return name;
+  }
+
   char getXDirection() {
     return xDirection;
   }
