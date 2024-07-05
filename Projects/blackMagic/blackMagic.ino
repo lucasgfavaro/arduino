@@ -1,20 +1,7 @@
-/* 
-  This program takes values from joytick and outputs the following commands
-
-  [directionOverAxis]"-"[intensity 0-255]
-
-  directionOverAxis X
-    *R = Right
-    *L = Left
-
-  directionOverAxis Y
-    *U = Up
-    *D = Down
-
-*/
+#include <SoftwareSerial.h>
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
-#include <SoftwareSerial.h>
+#include "DISPLAY.h"
 #include "JOYSTICK.h"
 #include "BUTTON.h"
 
@@ -33,127 +20,68 @@ const int blueToothTX = 2;
 const int blueToothRX = 3;
 
 SoftwareSerial HCO5Serial(blueToothTX, blueToothRX);  // RX, TX
-Joystick rightJoystick("RIGHT JOYSTICK", rightJoystickPinX, rightJoystickPinY, rightJoystickButton);
-Joystick leftJoystick("LEFT JOYSTICK", leftJoystickPinX, leftJoystickPinY, leftJoystickButton);
+
+MiniJoystick rightMiniJoystick("RIGHT JOYSTICK", rightJoystickPinX, rightJoystickPinY, rightJoystickButton);
+MiniJoystick leftMiniJoystick("LEFT JOYSTICK", leftJoystickPinX, leftJoystickPinY, leftJoystickButton);
 Button rightButton("RIGHT BUTTON", rightButtonPin);
 Button leftButton("LEFT BUTTON", leftButtonPin);
+Button rightToggleSwitch("RIGHT SWITCH", rightButtonPin);
+Button leftToggleSwitch("LEFT SWITCH", leftButtonPin);
 LiquidCrystal_I2C lcd(0x27, 16, 2);
+Display* display;
 
 void setup() {
   Serial.begin(nanoSerialBaudRate);
-  HCO5Serial.begin(HCO5SerialBaudRate);
-  initializeDisplay();
-  //initializeBluetooth(38400);
+  initializeBluetooth(HCO5SerialBaudRate);
+  display = new Display(&lcd);
 }
 
 void loop() {
+  refreshJoystickComponents();
+  sendRemoteCommand();
+  updateDisplay();
+  debugJoystickStatus();
+}
 
-  rightJoystick.refreshStatus();
-  leftJoystick.refreshStatus();
+void refreshJoystickComponents() {
+  rightMiniJoystick.refreshStatus();
+  leftMiniJoystick.refreshStatus();
   rightButton.refreshStatus();
   leftButton.refreshStatus();
+}
 
-  if (rightJoystick.getXPositionAndPower().indexOf("R") >= 0){
-    HCO5Serial.write("R");
-  } 
-  else if (rightJoystick.getXPositionAndPower().indexOf("L")>= 0){
-    HCO5Serial.write("L");
-  }
-  else if (leftJoystick.getYPositionAndPower().indexOf("U")>= 0){
-    HCO5Serial.write("F");
-  }
-  else if (leftJoystick.getYPositionAndPower().indexOf("D")>= 0){
-    HCO5Serial.write("B");
+void updateDisplay() {
+  lcd.clear();
+
+  if (leftButton.isActive()) {
+    display->leftButtonOn();
   } else {
-    HCO5Serial.write("S");
+    display->leftButtonOff();
   }
-  displayUpdate();
 
-  printJoystickStatus();
+  if (rightButton.isActive()) {
+    display->rightButtonOn();
+  } else {
+    display->rightButtonOff();
+  }
+
+  if (leftToggleSwitch.isActive()) {
+    display->leftToggleSwitchOn();
+  } else {
+    display->leftToggleSwitchOff();
+  }
+
+  if (rightToggleSwitch.isActive()) {
+    display->rightToggleSwitchOn();
+  } else {
+    display->rightToggleSwitchOff();
+  }
+
+  display->joystick('L', leftMiniJoystick.getXDirection(), leftMiniJoystick.getXPower(), leftMiniJoystick.getYDirection(), leftMiniJoystick.getYPower(), leftMiniJoystick.buttonIsOn());
+  display->joystick('R', rightMiniJoystick.getXDirection(), rightMiniJoystick.getXPower(), rightMiniJoystick.getYDirection(), rightMiniJoystick.getYPower(), rightMiniJoystick.buttonIsOn());
 }
 
-void displayUpdate(){
-    lcd.clear();
-    
-    if (leftButton.isActive()){
-      lcd.setCursor(0, 0);
-      lcd.print("BX");
-    } else {
-      lcd.setCursor(0, 0);
-      lcd.print("B");
-    }
-
-    if (rightButton.isActive()){
-      lcd.setCursor(14, 0);
-      lcd.print("BX");
-    } else {
-      lcd.setCursor(14, 0);
-      lcd.print("B");
-    }
-
-    // lcd.setCursor(0, 1);
-    // lcd.print("SX");
-    // lcd.setCursor(14, 1);
-    // lcd.print("SX");
-
-  if (rightJoystick.getXPositionAndPower().indexOf("R") >= 0){
-     lcd.setCursor(5, 0);
-     lcd.print("RIGHT");
-  } 
-  else if (rightJoystick.getXPositionAndPower().indexOf("L")>= 0){
-     lcd.setCursor(5, 0);
-     lcd.print("LEFT");
-  }
-  else if (leftJoystick.getYPositionAndPower().indexOf("U")>= 0){
-     lcd.setCursor(4, 0);
-     lcd.print("FORWARD");
-  }
-  else if (leftJoystick.getYPositionAndPower().indexOf("D")>= 0){
-     lcd.setCursor(4, 0);
-     lcd.print("BACKWARD");
-  }
-
-  lcd.setCursor(4, 1);
-  lcd.print("PWR:");
-
-}
-
-int calcultaPower(){
-  int greatest;
-
-  greatest = a; // Assume a is the greatest to start with
-
-  if (b > greatest) {
-    greatest = b;
-  }
-  if (c > greatest) {
-    greatest = c;
-  }
-  if (d > greatest) {
-    greatest = d;
-  }
-
-}
-
-void initializeDisplay(){
-  lcd.begin(16,2);
-  lcd.backlight();
-  lcd.setCursor(0, 0);
-  lcd.print("Systems Check...");
-  delay(2000);
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("Systems Ok");
-  delay(2000);
-  lcd.clear();
-  lcd.print("Welcome!");
-  delay(2000);
-  lcd.clear();
-}
-
-
-
-void initializeBluetooth(int baud){
+void initializeBluetooth(unsigned long baud) {
   Serial.println(baud);
   HCO5Serial.begin(baud);
 
@@ -165,11 +93,23 @@ void initializeBluetooth(int baud){
   //BTSerial.print("AT+LINK=98DA:50:02E823");
 }
 
-void printJoystickStatus() {
-  Serial.print(rightJoystick.toString() + " " + leftJoystick.toString() + " " + rightButton.toString() + " " + leftButton.toString() + "\r\n");
+void debugJoystickStatus() {
+  Serial.print(leftMiniJoystick.toString() + "  |  " + rightMiniJoystick.toString() + "\r\n");
 }
 
-void sendCommand(char command) {
-  Serial.println(command);
-  HCO5Serial.write(command);
+void sendRemoteCommand() {
+  // if (rightMiniJoystick.getXPositionAndPower().indexOf("R") >= 0){
+  //   HCO5Serial.write("R");
+  // }
+  // else if (rightMiniJoystick.getXPositionAndPower().indexOf("L")>= 0){
+  //   HCO5Serial.write("L");
+  // }
+  // else if (leftMiniJoystick.getYPositionAndPower().indexOf("U")>= 0){
+  //   HCO5Serial.write("F");
+  // }
+  // else if (leftMiniJoystick.getYPositionAndPower().indexOf("D")>= 0){
+  //   HCO5Serial.write("B");
+  // } else {
+  //   HCO5Serial.write("S");
+  // }
 }
