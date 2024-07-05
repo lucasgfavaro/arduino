@@ -65,17 +65,17 @@ void updateDisplay() {
     display->rightButtonOff();
   }
 
-  // if (leftToggleSwitch.isActive()) {
-  //   display->leftToggleSwitchOn();
-  // } else {
-  //   display->leftToggleSwitchOff();
-  // }
+  if (leftToggleSwitch.isActive()) {
+    display->leftToggleSwitchOn();
+  } else {
+    display->leftToggleSwitchOff();
+  }
 
-  // if (rightToggleSwitch.isActive()) {
-  //   display->rightToggleSwitchOn();
-  // } else {
-  //   display->rightToggleSwitchOff();
-  // }
+  if (rightToggleSwitch.isActive()) {
+    display->rightToggleSwitchOn();
+  } else {
+    display->rightToggleSwitchOff();
+  }
 
   display->joystick(leftMiniJoystick);
   display->joystick(rightMiniJoystick);

@@ -15,19 +15,17 @@ public:
     lcd->begin(16, 2);
     lcd->backlight();
     initializeCharacters();
-    //printDisplayLayout();
   }
 
   void initializeCharacters() {
+    // MAX 8 Characters from 0 to 7
     lcd->createChar(0, centered);
-    lcd->createChar(1, rightArrow);
-    lcd->createChar(2, leftArrow);
-    lcd->createChar(3, upArrow);
-    lcd->createChar(4, downArrow);
-    lcd->createChar(5, buttonOff);
-    lcd->createChar(6, buttonOn);
-    // lcd->createChar(7, toggleSwitchOff);
-    // lcd->createChar(8, toggleSwitchOn);
+    lcd->createChar(1, up);
+    lcd->createChar(2, down);
+    lcd->createChar(3, buttonOff);
+    lcd->createChar(4, buttonOn);
+    lcd->createChar(5, toggleSwitchOff);
+    lcd->createChar(6, toggleSwitchOn);
   }
 
   void joystick(MiniJoystick joystick) {
@@ -42,10 +40,10 @@ public:
     lcd->setCursor(startingCell, 0);
     switch (joystick.getYDirection()) {
       case 'U':
-        lcd->write(byte(3));
+        lcd->write(byte(1));
         break;
       case 'D':
-        lcd->write(byte(4));
+        lcd->write(byte(2));
         break;
       case 'C':
         lcd->write(byte(0));
@@ -56,10 +54,10 @@ public:
     lcd->setCursor(startingCell, 1);
     switch (joystick.getXDirection()) {
       case 'R':
-        lcd->write(byte(1));
+        lcd->print(">");
         break;
       case 'L':
-        lcd->write(byte(2));
+        lcd->print("<");
         break;
       case 'C':
         lcd->write(byte(0));
@@ -70,65 +68,44 @@ public:
 
   void leftButtonOn() {
     lcd->setCursor(0, 0);
-    lcd->write(byte(6));
+    lcd->write(byte(4));
   }
 
   void leftButtonOff() {
     lcd->setCursor(0, 0);
-    lcd->write(byte(5));
+    lcd->write(byte(3));
   }
 
   void rightButtonOn() {
     lcd->setCursor(15, 0);
-    lcd->write(byte(6));
+    lcd->write(byte(4));
   }
 
   void rightButtonOff() {
     lcd->setCursor(15, 0);
+    lcd->write(byte(3));
+  }
+
+  void leftToggleSwitchOn() {
+    lcd->setCursor(0, 1);
+    lcd->write(byte(6));
+  }
+
+  void leftToggleSwitchOff() {
+    lcd->setCursor(0, 1);
     lcd->write(byte(5));
   }
 
-  // void leftToggleSwitchOn() {
-  //   lcd->setCursor(0, 1);
-  //   lcd->write(byte(8));
-  // }
+  void rightToggleSwitchOn() {
+    lcd->setCursor(15, 1);
+    lcd->write(byte(6));
+  }
 
-  // void leftToggleSwitchOff() {
-  //   lcd->setCursor(0, 1);
-  //   lcd->write(byte(7));
-  // }
+  void rightToggleSwitchOff() {
+    lcd->setCursor(15, 1);
+    lcd->write(byte(5));
+  }
 
-  // void rightToggleSwitchOn() {
-  //   lcd->setCursor(15, 1);
-  //   lcd->write(byte(8));
-  // }
-
-  // void rightToggleSwitchOff() {
-  //   lcd->setCursor(15, 1);
-  //   lcd->write(byte(7));
-  // }
-
-  // void printDisplayLayout() {
-  //   lcd->clear();
-
-  //   leftButtonOff();
-  //   rightButtonOff();
-  //   leftToggleSwitchOff();
-  //   rightToggleSwitchOff();
-  //   joystick('L', 'R', 255, 'U', 255, true);
-  //   joystick('R', 'L', 255, 'D', 255, false);
-
-  //   delay(2000);
-
-  //   leftButtonOn();
-  //   rightButtonOn();
-  //   leftToggleSwitchOn();
-  //   rightToggleSwitchOn();
-  //   joystick('L', 'L', 255, 'D', 255, false);
-  //   joystick('R', 'R', 255, 'U', 255, true);
-
-  //   delay(2000);
-  // }
 };
 
 #endif
