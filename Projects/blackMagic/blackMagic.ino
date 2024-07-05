@@ -55,27 +55,31 @@ void updateDisplay() {
 
   if (leftButton.isActive()) {
     display->leftButtonOn();
+    display->leftToggleSwitchOn();
   } else {
     display->leftButtonOff();
+    display->leftToggleSwitchOff();
   }
 
   if (rightButton.isActive()) {
     display->rightButtonOn();
-  } else {
-    display->rightButtonOff();
-  }
-
-  if (leftToggleSwitch.isActive()) {
-    display->leftToggleSwitchOn();
-  } else {
-    display->leftToggleSwitchOff();
-  }
-
-  if (rightToggleSwitch.isActive()) {
     display->rightToggleSwitchOn();
   } else {
+    display->rightButtonOff();
     display->rightToggleSwitchOff();
   }
+
+  // if (leftToggleSwitch.isActive()) {
+  //   display->leftToggleSwitchOn();
+  // } else {
+  //   display->leftToggleSwitchOff();
+  // }
+
+  // if (rightToggleSwitch.isActive()) {
+  //   display->rightToggleSwitchOn();
+  // } else {
+  //   display->rightToggleSwitchOff();
+  // }
 
   display->joystick(leftMiniJoystick);
   display->joystick(rightMiniJoystick);
@@ -98,18 +102,15 @@ void debugJoystickStatus() {
 }
 
 void sendRemoteCommand() {
-  // if (rightMiniJoystick.getXPositionAndPower().indexOf("R") >= 0){
-  //   HCO5Serial.write("R");
-  // }
-  // else if (rightMiniJoystick.getXPositionAndPower().indexOf("L")>= 0){
-  //   HCO5Serial.write("L");
-  // }
-  // else if (leftMiniJoystick.getYPositionAndPower().indexOf("U")>= 0){
-  //   HCO5Serial.write("F");
-  // }
-  // else if (leftMiniJoystick.getYPositionAndPower().indexOf("D")>= 0){
-  //   HCO5Serial.write("B");
-  // } else {
-  //   HCO5Serial.write("S");
-  // }
+  if (leftMiniJoystick.getXDirection()=='R') {
+    HCO5Serial.write("R");
+  } else if (leftMiniJoystick.getXDirection()=='L') {
+    HCO5Serial.write("L");
+  } else if (leftMiniJoystick.getYDirection()=='U') {
+    HCO5Serial.write("F");
+  } else if (leftMiniJoystick.getYDirection()=='D') {
+    HCO5Serial.write("B");
+  } else {
+    HCO5Serial.write("S");
+  }
 }
