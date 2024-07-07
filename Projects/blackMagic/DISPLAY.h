@@ -4,6 +4,7 @@
 
 
 #include "JOYSTICK.h"
+#include "BUTTON.h"
 #include "CHARACTERS.h"
 
 class Display {
@@ -28,17 +29,44 @@ public:
     lcd->createChar(6, toggleSwitchOn);
   }
 
-  void joystick(MiniJoystick joystick) {
-    unsigned int startingCell;
+  void updateDisplay(MiniJoystick* leftMiniJoystick, Button* leftButton, Button* leftToggleSwitch, MiniJoystick* rightMiniJoystick, Button* rightButton, Button* rightToggleSwitch) {
+    lcd->clear();
 
-    if (joystick.getName().equals("LEFT")) {
-      startingCell = 3;
+    if (leftButton->isActive()) {
+      leftButtonOn();
+      leftToggleSwitchOn();
     } else {
-      startingCell = 9;
+      leftButtonOff();
+      leftToggleSwitchOff();
     }
 
-    lcd->setCursor(startingCell, 0);
-    switch (joystick.getYDirection()) {
+    if (rightButton->isActive()) {
+      rightButtonOn();
+      rightToggleSwitchOn();
+    } else {
+      rightButtonOff();
+      rightToggleSwitchOff();
+    }
+
+    if (leftToggleSwitch->isActive()) {
+      leftToggleSwitchOn();
+    } else {
+      leftToggleSwitchOff();
+    }
+
+    if (rightToggleSwitch->isActive()) {
+      rightToggleSwitchOn();
+    } else {
+      rightToggleSwitchOff();
+    }
+
+    updateJoystick(leftMiniJoystick, 3);
+    updateJoystick(rightMiniJoystick, 9);
+  }
+
+  void updateJoystick(MiniJoystick* miniJoystick, unsigned int referenceCell) {
+    lcd->setCursor(referenceCell, 0);
+    switch (miniJoystick->getYDirection()) {
       case 'U':
         lcd->write(byte(1));
         break;
@@ -49,10 +77,9 @@ public:
         lcd->write(byte(0));
         break;
     }
-    lcd->print(joystick.getYPower());
-
-    lcd->setCursor(startingCell, 1);
-    switch (joystick.getXDirection()) {
+    lcd->print(String(miniJoystick->getYPower()));
+    lcd->setCursor(referenceCell, 1);
+    switch (miniJoystick->getXDirection()) {
       case 'R':
         lcd->print(">");
         break;
@@ -63,7 +90,7 @@ public:
         lcd->write(byte(0));
         break;
     }
-    lcd->print(joystick.getXPower());
+    lcd->print(String(miniJoystick->getXPower()));
   }
 
   void leftButtonOn() {
@@ -105,7 +132,6 @@ public:
     lcd->setCursor(15, 1);
     lcd->write(byte(5));
   }
-
 };
 
 #endif

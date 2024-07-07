@@ -6,28 +6,25 @@
 
 class Button {
   private:
-    String name;
     int pin;
-    int status;
+    int state;
 
   public:
     // Constructor
-    Button(String buttonName, int buttonPin) {
-      name = buttonName;
+    Button(int buttonPin) {      
       pin = buttonPin;
       pinMode(buttonPin, INPUT_PULLUP);
     }
 
-    void refreshStatus() {
-      status = digitalRead(pin);
-    }
-
-    String toString() {
-      return name + " Status: " + status;
+    char getState() {
+      state = digitalRead(pin);
+      if (state==1)
+        return '0';
+      return '1';
     }
 
     boolean isActive(){
-      if (status==0)
+      if (state==0)
         return true;
       return false;
     }

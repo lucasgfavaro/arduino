@@ -1,6 +1,7 @@
 #include <SoftwareSerial.h>
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
+#include "BLACKMAGIC_RC_STATE.h"
 #include "DISPLAY.h"
 #include "JOYSTICK.h"
 #include "BUTTON.h"
@@ -20,15 +21,15 @@ const int blueToothTX = 2;
 const int blueToothRX = 3;
 
 SoftwareSerial HCO5Serial(blueToothTX, blueToothRX);  // RX, TX
-
-MiniJoystick rightMiniJoystick("RIGHT", rightJoystickPinX, rightJoystickPinY, rightJoystickButton);
-MiniJoystick leftMiniJoystick("LEFT", leftJoystickPinX, leftJoystickPinY, leftJoystickButton);
-Button rightButton("RIGHT BUTTON", rightButtonPin);
-Button leftButton("LEFT BUTTON", leftButtonPin);
-Button rightToggleSwitch("RIGHT SWITCH", rightButtonPin);
-Button leftToggleSwitch("LEFT SWITCH", leftButtonPin);
+MiniJoystick rightMiniJoystick(rightJoystickPinX, rightJoystickPinY, rightJoystickButton);
+MiniJoystick leftMiniJoystick(leftJoystickPinX, leftJoystickPinY, leftJoystickButton);
+Button rightButton(rightButtonPin);
+Button leftButton(leftButtonPin);
+Button rightToggleSwitch(rightButtonPin);
+Button leftToggleSwitch(leftButtonPin);
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 Display* display;
+BlackMagicRemoteControlState remoteControlState;
 
 void setup() {
   Serial.begin(nanoSerialBaudRate);
@@ -37,80 +38,25 @@ void setup() {
 }
 
 void loop() {
-  refreshJoystickComponents();
-  sendRemoteCommand();
-  updateDisplay();
-  debugJoystickStatus();
+  remoteControlState.setState(leftMiniJoystick.getState(), leftButton.getState(), leftToggleSwitch.getState(), rightMiniJoystick.getState(), rightButton.getState(), rightToggleSwitch.getState());
+  display->updateDisplay(&leftMiniJoystick, &leftButton, &leftToggleSwitch, &rightMiniJoystick, &rightButton, &rightToggleSwitch);
+  sendRemoteCommand(remoteControlState.getState());
+  delay(50);
 }
 
-void refreshJoystickComponents() {
-  rightMiniJoystick.refreshStatus();
-  leftMiniJoystick.refreshStatus();
-  rightButton.refreshStatus();
-  leftButton.refreshStatus();
-}
-
-void updateDisplay() {
-  lcd.clear();
-
-  if (leftButton.isActive()) {
-    display->leftButtonOn();
-    display->leftToggleSwitchOn();
-  } else {
-    display->leftButtonOff();
-    display->leftToggleSwitchOff();
-  }
-
-  if (rightButton.isActive()) {
-    display->rightButtonOn();
-    display->rightToggleSwitchOn();
-  } else {
-    display->rightButtonOff();
-    display->rightToggleSwitchOff();
-  }
-
-  // if (leftToggleSwitch.isActive()) {
-  //   display->leftToggleSwitchOn();
-  // } else {
-  //   display->leftToggleSwitchOff();
-  // }
-
-  // if (rightToggleSwitch.isActive()) {
-  //   display->rightToggleSwitchOn();
-  // } else {
-  //   display->rightToggleSwitchOff();
-  // }
-
-  display->joystick(leftMiniJoystick);
-  display->joystick(rightMiniJoystick);
+void sendRemoteCommand(String state) {
+  String command = state + "\n";
+  Serial.print(command);
+  HCO5Serial.write(command.c_str());
 }
 
 void initializeBluetooth(unsigned long baud) {
   Serial.println(baud);
   HCO5Serial.begin(baud);
-
   // Iniciar conexión con el esclavo (usar la dirección del esclavo obtenida anteriormente)
   //BTSerial.print("AT+BIND=98DA:50:02E823");  // Slave MAC
   //delay(1000);
   //BTSerial.print("AT+CMODE=0");
   //delay(1000);
   //BTSerial.print("AT+LINK=98DA:50:02E823");
-}
-
-void debugJoystickStatus() {
-  Serial.print(leftMiniJoystick.toString() + "  |  " + rightMiniJoystick.toString() + "\r\n");
-}
-
-void sendRemoteCommand() {
-  if (leftMiniJoystick.getXDirection()=='R') {
-    HCO5Serial.write("R");
-  } else if (leftMiniJoystick.getXDirection()=='L') {
-    HCO5Serial.write("L");
-  } else if (leftMiniJoystick.getYDirection()=='U') {
-    HCO5Serial.write("F");
-  } else if (leftMiniJoystick.getYDirection()=='D') {
-    HCO5Serial.write("B");
-  } else {
-    HCO5Serial.write("S");
-  }
 }
