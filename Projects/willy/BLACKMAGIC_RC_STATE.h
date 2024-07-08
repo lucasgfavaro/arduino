@@ -23,12 +23,15 @@ public:
   BlackMagicRemoteControl() {
   }
 
-  void setStateFromCommand(String state) {
-    setState(state.substring(0, 9), state.charAt(9), state.charAt(10), state.substring(11, 20), state.charAt(20), state.charAt(21));
+  void flushState(){
+    setState("C000C0000", '0', '0', "C000C0000", '0', '0');
   }
 
-  void setState(String leftMiniJoystickState, char leftButtonState, char leftToggleSwitchState, String rightMiniJoystickState, char rightButtonState, char rightToggleSwitchState) {
+  String setStateFromCommand(String state) {
+    return setState(state.substring(0, 9), state.charAt(9), state.charAt(10), state.substring(11, 20), state.charAt(20), state.charAt(21));
+  }
 
+  String setState(String leftMiniJoystickState, char leftButtonState, char leftToggleSwitchState, String rightMiniJoystickState, char rightButtonState, char rightToggleSwitchState) {
     leftMiniJoystickXDirection = leftMiniJoystickState.charAt(0);
     leftMiniJoystickXPower = leftMiniJoystickState.substring(1, 4);
     leftMiniJoystickYDirection = leftMiniJoystickState.charAt(4);
@@ -44,6 +47,7 @@ public:
     rightMiniJoystickButtonOn = rightMiniJoystickState.charAt(8);
     rightButtonOn = rightButtonState;
     rightToggleButtonOn = rightToggleSwitchState;
+    return getState();
   }
 
   String getState() {
@@ -61,7 +65,7 @@ public:
     return leftMiniJoystickXPower;
   };
 
-  char getleftMiniJoystickYDirection() {
+  char getLeftMiniJoystickYDirection() {
     return leftMiniJoystickYDirection;
   }
 
@@ -76,13 +80,13 @@ public:
   }
 
   boolean getLeftButtonOn() {
-    if (leftButtonOn == 1)
+    if (leftButtonOn == '1')
       return true;
     return false;
   }
 
   boolean getLeftToggleButtonOn() {
-    if (leftToggleButtonOn == 1)
+    if (leftToggleButtonOn == '1')
       return true;
     return false;
   }
@@ -104,19 +108,19 @@ public:
   };
 
   boolean getRightMiniJoystickButtonOn() {
-    if (rightMiniJoystickButtonOn == 1)
+    if (rightMiniJoystickButtonOn == '1')
       return true;
     return false;
   }
 
   boolean getRightButtonOn() {
-    if (rightButtonOn == 1)
+    if (rightButtonOn == '1')
       return true;
     return false;
   }
 
   boolean getRightToggleButtonOn() {
-    if (rightToggleButtonOn == 1)
+    if (rightToggleButtonOn == '1')
       return true;
     return false;
   }

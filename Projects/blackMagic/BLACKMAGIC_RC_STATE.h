@@ -23,6 +23,10 @@ public:
   BlackMagicRemoteControl() {
   }
 
+  void setStateFromCommand(String state) {
+    setState(state.substring(0, 9), state.charAt(9), state.charAt(10), state.substring(11, 20), state.charAt(20), state.charAt(21));
+  }
+
   void setState(String leftMiniJoystickState, char leftButtonState, char leftToggleSwitchState, String rightMiniJoystickState, char rightButtonState, char rightToggleSwitchState) {
 
     leftMiniJoystickXDirection = leftMiniJoystickState.charAt(0);
@@ -72,7 +76,7 @@ public:
   }
 
   boolean getLeftButtonOn() {
-    if (leftButtonOn == 1) 
+    if (leftButtonOn == 1)
       return true;
     return false;
   }
@@ -95,7 +99,7 @@ public:
     return rightMiniJoystickYDirection;
   }
 
-  String getRightMiniJoystickYPower(){
+  String getRightMiniJoystickYPower() {
     return rightMiniJoystickYPower;
   };
 
