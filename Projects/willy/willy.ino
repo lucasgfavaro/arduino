@@ -12,9 +12,6 @@ AF_DCMotor rightMotor1(3, MOTOR34_64KHZ);
 AF_DCMotor rightMotor2(4, MOTOR34_64KHZ);
 
 boolean debug = false;
-const int BUFFER_SIZE = 23;
-char inputBuffer[BUFFER_SIZE];
-int bufferIndex = 0;
 BlackMagicRemoteControlState remoteControlState;
 
 void setup() {
@@ -23,13 +20,8 @@ void setup() {
 }
 
 void loop() {
-  char receivedData[23];
-  int bytesRead = bluetoothSerial.readBytesUntil('\n', receivedData, sizeof(receivedData) - 1);
-  if (bytesRead == 22) {    
-    receivedData[bytesRead] = '\0';
-    remoteControlState.setStateFromCommand(String(receivedData));
-    processCommand(&remoteControlState);
-  }
+  remoteControlState.setStateFromCommand(bluetoothSerial.readStringUntil('\n'));
+  processCommand(&remoteControlState);
 }
 
 void processCommand(BlackMagicRemoteControlState* remoteControlState) {

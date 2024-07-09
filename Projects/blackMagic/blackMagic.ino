@@ -41,7 +41,7 @@ void loop() {
   remoteControlState.setState(leftMiniJoystick.getState(), leftButton.getState(), leftToggleSwitch.getState(), rightMiniJoystick.getState(), rightButton.getState(), rightToggleSwitch.getState());
   display->updateDisplay(&leftMiniJoystick, &leftButton, &leftToggleSwitch, &rightMiniJoystick, &rightButton, &rightToggleSwitch);
   sendRemoteCommand(remoteControlState.getState());
-  delay(50);
+  delay(10);
 }
 
 void sendRemoteCommand(String state) {
