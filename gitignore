@@ -1,0 +1,5 @@
+# Archivos y directorios de compilación
+/build/
+/dist/
+/out/
+/target/
